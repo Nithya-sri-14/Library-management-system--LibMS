@@ -9,7 +9,7 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "build": "npm run install:backend && cd frontend && npm install && npm run build",
+    "build": "npm run install:backend && cd frontend && npm install --include=dev && npm run build",
     "start": "cd backend && npm start",
     "seed": "cd backend && npm run seed"
   },
