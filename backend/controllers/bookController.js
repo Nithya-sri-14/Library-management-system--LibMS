@@ -27,7 +27,8 @@ exports.getBooks = async (req, res, next) => {
         .populate('author', 'name')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
       Book.countDocuments(filter),
     ]);
 
@@ -48,7 +49,7 @@ exports.getBooks = async (req, res, next) => {
 
 exports.getBook = async (req, res, next) => {
   try {
-    const book = await Book.findById(req.params.id).populate('author', 'name biography nationality');
+    const book = await Book.findById(req.params.id).populate('author', 'name biography nationality').lean();
     if (!book) return res.status(404).json({ message: 'Book not found' });
     res.json({ success: true, book });
   } catch (error) {
@@ -58,7 +59,7 @@ exports.getBook = async (req, res, next) => {
 
 exports.createBook = async (req, res, next) => {
   try {
-    const author = await Author.findById(req.body.author);
+    const author = await Author.findById(req.body.author).lean();
     if (!author) return res.status(404).json({ message: 'Author not found' });
 
     const book = await Book.create({ ...req.body, coverImage: req.file ? `/uploads/${req.file.filename}` : '' });

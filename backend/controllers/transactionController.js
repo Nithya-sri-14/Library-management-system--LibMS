@@ -27,7 +27,8 @@ exports.getTransactions = async (req, res, next) => {
         .populate({ path: 'issuedBy', select: 'name' })
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
       Transaction.countDocuments(filter),
     ]);
 
@@ -159,7 +160,8 @@ exports.getOverdueTransactions = async (req, res, next) => {
     })
       .populate({ path: 'book', select: 'title isbn' })
       .populate({ path: 'borrower', select: 'name email phone' })
-      .sort({ dueDate: 1 });
+      .sort({ dueDate: 1 })
+      .lean();
     res.json({ success: true, count: transactions.length, transactions });
   } catch (error) {
     next(error);

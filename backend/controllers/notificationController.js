@@ -6,7 +6,7 @@ exports.getNotifications = async (req, res, next) => {
     if (req.query.unread === 'true') filter.isRead = false;
 
     const [notifications, unreadCount] = await Promise.all([
-      Notification.find(filter).sort('-createdAt').limit(50),
+      Notification.find(filter).sort('-createdAt').limit(50).lean(),
       Notification.countDocuments({ user: req.user._id, isRead: false }),
     ]);
 

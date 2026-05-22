@@ -15,7 +15,7 @@ exports.getAuthors = async (req, res, next) => {
     const sort = req.query.sort === 'books' ? { booksWritten: -1 } : { name: 1 };
 
     const [authors, total] = await Promise.all([
-      Author.find(filter).sort(sort).skip(skip).limit(limit),
+      Author.find(filter).sort(sort).skip(skip).limit(limit).lean(),
       Author.countDocuments(filter),
     ]);
 
@@ -31,9 +31,9 @@ exports.getAuthors = async (req, res, next) => {
 
 exports.getAuthor = async (req, res, next) => {
   try {
-    const author = await Author.findById(req.params.id);
+    const author = await Author.findById(req.params.id).lean();
     if (!author) return res.status(404).json({ message: 'Author not found' });
-    const books = await Book.find({ author: author._id, isActive: true }).select('title isbn genre publishedDate');
+    const books = await Book.find({ author: author._id, isActive: true }).select('title isbn genre publishedDate').lean();
     res.json({ success: true, author, books });
   } catch (error) {
     next(error);

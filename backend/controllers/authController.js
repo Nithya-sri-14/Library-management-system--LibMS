@@ -59,7 +59,7 @@ exports.login = async (req, res, next) => {
 
 exports.getMe = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id).lean();
     res.json({ success: true, user });
   } catch (error) {
     next(error);
@@ -98,7 +98,7 @@ exports.updatePassword = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find().sort('-createdAt');
+    const users = await User.find().sort('-createdAt').lean();
     res.json({ success: true, count: users.length, users });
   } catch (error) {
     next(error);
