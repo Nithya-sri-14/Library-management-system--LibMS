@@ -3,16 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiBook, FiMail, FiLock, FiEye, FiEyeOff, FiClock } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
 import toast from 'react-hot-toast';
-
-const warmed = { current: false };
-function warmServer() {
-  if (warmed.current) return;
-  warmed.current = true;
-  api.get('/health', { timeout: 55000 }).catch(() => {});
-}
-warmServer();
 
 export default function Login() {
   const { login } = useAuth();

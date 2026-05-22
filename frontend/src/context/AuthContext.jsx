@@ -29,8 +29,18 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = useCallback(async (email, password) => {
-    const res = await authAPI.login({ email, password });
+  const login = useCallback(async (email, password, retries = 1) => {
+    const fn = async (attempt) => {
+      try {
+        return await authAPI.login({ email, password });
+      } catch (err) {
+        if (attempt < retries && (!err.response || err.code === 'ECONNABORTED')) {
+          return fn(attempt + 1);
+        }
+        throw err;
+      }
+    };
+    const res = await fn(0);
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('user', JSON.stringify(res.data.user));
     setUser(res.data.user);
