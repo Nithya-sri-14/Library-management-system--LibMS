@@ -16,8 +16,6 @@ const config = require('./config');
 
 const app = express();
 
-connectDB();
-
 app.use(compression({ level: 6 }));
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: process.env.FRONTEND_URL || '*', credentials: true }));
@@ -61,13 +59,19 @@ if (config.nodeEnv === 'production') {
 app.use(errorHandler);
 
 const PORT = config.port;
-const server = app.listen(PORT, () => {
-  console.log(`Server running in ${config.nodeEnv} mode on port ${PORT}`);
-});
 
-const keepaliveUrl = process.env.KEEPALIVE_URL || `http://localhost:${PORT}/api/health`;
-setInterval(() => {
-  http.get(keepaliveUrl, (res) => res.on('data', () => {}));
-}, 600000);
+const start = async () => {
+  await connectDB();
+  const server = app.listen(PORT, () => {
+    console.log(`Server running in ${config.nodeEnv} mode on port ${PORT}`);
+  });
+
+  const keepaliveUrl = process.env.KEEPALIVE_URL || `http://localhost:${PORT}/api/health`;
+  setInterval(() => {
+    http.get(keepaliveUrl, (res) => res.on('data', () => {}));
+  }, 600000);
+};
+
+start();
 
 module.exports = app;
