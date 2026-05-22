@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = useCallback(async (email, password, retries = 1) => {
+  const login = useCallback(async (email, password, retries = 2) => {
     const fn = async (attempt) => {
       try {
         return await authAPI.login({ email, password });
